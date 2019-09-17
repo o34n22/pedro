@@ -1,0 +1,4 @@
+source venv/bin/activate
+
+pip3 install flask-bootstrap
+pip3 install flask-wtf
