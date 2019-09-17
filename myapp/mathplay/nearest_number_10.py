@@ -103,7 +103,70 @@ def make_this_list(target=5472):
             L.append(L0.pop(d))
         return L
 
-def solve_1(n, target=5472):
+#def tail2(n, R2, target=5472):
+#    """
+#    R2 - list with two results
+#    """
+#    n = str(n)
+#    S = []
+#    list.sort(R2)
+#    for a in R2:
+#        N = [int(d) for d in n]
+#        candidate1 = [N.pop(N.index(a))]
+#        if a > int(str(target)[0]):
+#            candidate1 += sorted(N)
+#        else:
+#            candidate1 += sorted(N,reverse=True)
+#        s = ''
+#        for d in candidate1:
+#            s += str(d)
+#        s = int(s)
+#        print(s)
+#        S.append(s)
+#    for i in range(len(S)):
+#        S[i] -= target
+#        S[i]  = abs(S[i])
+#    return min(S)
+    
+def tail(n, R2, target=5472):
+    n = str(n)
+    for i in range(len(R2)):
+        R2[i] = int(R2[i])        
+    list.sort(R2)
+    S = []
+    N = [int(d) for d in n]
+    N.pop(N.index(R2[0]))
+    N.sort(reverse=True)
+    N = [R2[0]] + N
+    s = ''
+    for d in N:
+        s += str(d)
+    S.append(int(s))
+    # -------
+    N = [int(d) for d in n]
+    N.pop(N.index(R2[1]))
+    N.sort(reverse=False)
+    N = [R2[1]] + N
+    s = ''
+    for d in N:
+        s += str(d)
+    S.append(int(s))
+    # -------
+    S_ = S.copy()
+    for i in range(len(S)):
+        S_[i] -= target
+        S_[i] = abs(S_[i])
+    min_index = min(range(len(S)),key=S_.__getitem__)
+    return S[min_index]
+    
+    
+    
+
+def solve_0(n, target=5472):
+    """
+    aims to find the nearest number with the smallest number
+    of comparisons needed
+    """
     n = str(n)
     A = make_this_list()
     R = []
@@ -113,9 +176,10 @@ def solve_1(n, target=5472):
         if b != -1:
             b = n.find(str(A[i]))
             if b == -1:
+                # go back in
                 return R
             R.append(n[b])
-            return R
+            return tail(n,R,target=target)
         b = n.find(str(A[i]))
         if b != -1:
             R.append(n[b])
@@ -214,5 +278,5 @@ def wrong(n,ans):
 #print(type(find_nearest('3876')))
 
 # testing 16.09.19
-#print(solve_3(2369))
+print(solve_0(2369))
 #print(make_this_list())
