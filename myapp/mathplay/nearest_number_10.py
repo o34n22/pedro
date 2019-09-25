@@ -43,19 +43,19 @@ def is_permutation(n,m):
         n = n[:b] + n[(b+1):]
     return True
 
-#def pose(target=500):
-#    """
-#    returns str
-#    (a random integer with same number of digits as target number)
-#    """
-#    while True:
-#        digits = len(str(target))
-#        n = 0
-#        for position in range(digits):
-#            place_value = 10**position
-#            n += place_value*rd.randint(0,9)
-#        if len(str(n)) == digits: 
-#            return str(n)
+def pose(target=5472):
+    """
+    returns str
+    (a random integer with same number of digits as target number)
+    """
+    while True:
+        digits = len(str(target))
+        n = 0
+        for position in range(digits):
+            place_value = 10**position
+            n += place_value*rd.randint(0,9)
+        if len(str(n)) == digits: 
+            return str(n)
 
 # to-do: catch type errors
 
@@ -80,7 +80,7 @@ def solve(n,target=5472):
 def make_this_list(target=5472):
     """
     these lists should be written to file at some point
-    (only 20 different ones exist)
+    (only ~ 20 different ones exist)
     """
     L0 = list(range(10))
     L = []
@@ -103,30 +103,6 @@ def make_this_list(target=5472):
             L.append(L0.pop(d))
         return L
 
-#def tail2(n, R2, target=5472):
-#    """
-#    R2 - list with two results
-#    """
-#    n = str(n)
-#    S = []
-#    list.sort(R2)
-#    for a in R2:
-#        N = [int(d) for d in n]
-#        candidate1 = [N.pop(N.index(a))]
-#        if a > int(str(target)[0]):
-#            candidate1 += sorted(N)
-#        else:
-#            candidate1 += sorted(N,reverse=True)
-#        s = ''
-#        for d in candidate1:
-#            s += str(d)
-#        s = int(s)
-#        print(s)
-#        S.append(s)
-#    for i in range(len(S)):
-#        S[i] -= target
-#        S[i]  = abs(S[i])
-#    return min(S)
     
 def tail(n, R2, target=5472):
     n = str(n)
@@ -134,6 +110,7 @@ def tail(n, R2, target=5472):
         R2[i] = int(R2[i])        
     list.sort(R2)
     S = []
+    # -------
     N = [int(d) for d in n]
     N.pop(N.index(R2[0]))
     N.sort(reverse=True)
@@ -151,13 +128,15 @@ def tail(n, R2, target=5472):
     for d in N:
         s += str(d)
     S.append(int(s))
-    # -------
+    # ------- distance to target
     S_ = S.copy()
     for i in range(len(S)):
         S_[i] -= target
         S_[i] = abs(S_[i])
-    min_index = min(range(len(S)),key=S_.__getitem__)
-    return S[min_index]
+    if S_[0] != S_[1]:
+        min_index = min(range(len(S)),key=S_.__getitem__)
+        return S[min_index]
+    pass # catch case of two nearest permutations here
     
     
     
@@ -168,67 +147,31 @@ def solve_0(n, target=5472):
     of comparisons needed
     """
     n = str(n)
-    A = make_this_list()
+    A = make_this_list(target=target)
+    print('A: ',A)
     R = []
     i = 0
     b = -1
     while True:
         if b != -1:
+            c = b
             b = n.find(str(A[i]))
             if b == -1:
                 # go back in
-                return R
+                t = str(target)[1:]
+                print('r')
+                print('n: '+n)
+                print('new_t: '+str(t))
+#                print('c: '+str(c))
+                print('new_n: '+n[:c]+n[(c+1):])
+                return solve_0(n[:c]+n[(c+1):],int(t))
             R.append(n[b])
             return tail(n,R,target=target)
         b = n.find(str(A[i]))
         if b != -1:
             R.append(n[b])
         i += 1
-        
-
-#def compute_u(n_list,target=5472):
-#    result = []
-#    for i in range(len(n_list)):
-#        a = (n_list[i] - target)
-#        if a > 0:
-#            a += 1
-#        result.append(a)
-#    return result
-
-#def solve_2(n,target=5472):
-#    """no degeneracy"""
-#    n = str(n)
-#    l = len(n)
-#    N = [int(d) for d in n]
-#    T = [int(d) for d in str(target)]
-#    solution = ''
-#    # 1st digit
-#    M = range(l)
-#    U = compute_u(N,T[-l])
-#    U_abs = np.abs(np.array(U))
-#    ex_index = min(M,key=U_abs.__getitem__)
-#    if U[ex_index] < 0:
-#        up = False
-#    else:
-#        up = True
-#    # remaining digits
-#    solution += str(N.pop(ex_index))
-#    l -= 1
-#    while l > 1:
-#        M = range(l)
-#        U = compute_u(N,T[-l])
-#        U_abs = np.abs(np.array(U))
-#        
-#        if up:
-#            ex_index = min(M,key=U_abs.__getitem__)            
-#        else: 
-#            ex_index = max(M,key=U_abs.__getitem__)
-#        
-#        solution += str(N.pop(ex_index))
-#        l -= 1
-#    solution += str(N[0])
-#    return int(solution)
-    
+  
 
 def wrong(n,ans):
     if is_permutation(n,ans):
@@ -244,27 +187,6 @@ def wrong(n,ans):
 # --------------- testing ----------------
 
 
-#def make_n1():
-#    b = make_n()
-#    if b == find_nearest(b): 
-#        # more efficient: perform one random permutation
-#        b = rd.choice(permutations(b)[1:])
-#    return b
-
-#def play():
-#    b = make_n()
-#    if b == find_nearest(b): 
-#        b = rd.choice(permutations(b)[1:])
-#    print('Rearrange the digits of %s to get the nearest number to %d!' % (b,500))
-#    while True:
-#        ans = input('->')
-#        if ans == find_nearest(b):
-#            print('perfect')
-#            break
-#        elif ans not in permutations(b):
-#            print('Digits aren\'t matching. You must use the digits from \
-#                  the number above.')
-#    return None
 #k = 0
 ##L = [910,956,249,847,123]
 #while k < 5:
@@ -278,5 +200,5 @@ def wrong(n,ans):
 #print(type(find_nearest('3876')))
 
 # testing 16.09.19
-print(solve_0(2369))
+print(solve_0(9675))
 #print(make_this_list())
