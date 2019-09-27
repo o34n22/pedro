@@ -9,6 +9,7 @@ number with two nearest permutations?
 
 import random as rd
 import numpy as np
+from math import ceil
 
 def permutations(n):
     """
@@ -77,34 +78,45 @@ def solve(n,target=1999):
         j+=1
     return P[j_min]
 
-def make_search_list(target=1999):
-    """
-    these lists should be written to file at some point
-    (only ~ 20 different ones exist)
-    """
-    L0 = list(range(10))
-    L = []
-    target_length = len(str(target))
-    target_rounded = round(target,-target_length+1)
-    d = int(str(target_rounded)[0])
-    if target_rounded - target > 0: 
-        d -= 1
-        while len(L) != 10:
-            print("d = " + str(d))
-            print(L)
-            L.append(L0.pop(d))
-            L.append(L0.pop(d))
-            if d != 0:
-                d -= 1
-        return L
-    else:
-        while len(L) != 10:
-            L.append(L0.pop(d))
-            if d != 0:
-                d -= 1
-            L.append(L0.pop(d))
-        return L
+#def make_search_list(target=1999):
+#    """
+#    these lists should be written to file at some point
+#    (only ~ 20 different ones exist)
+#    """
+#    L0 = list(range(10))
+#    L = []
+#    target_length = len(str(target))
+#    print(target_length)
+#    target_rounded = round(target,-target_length+1)
+#    print(target_rounded)
+#    d = int(str(target_rounded)[0])
+#    print("d = " + str(d))
+#    if target_rounded - target > 0: 
+#        d -= 1
+#        while len(L) != 10:
+#            print("d = " + str(d))
+#            L.append(L0.pop(d))
+#            L.append(L0.pop(d))
+#            print(L0)
+#            print(L)
+#            if d != 0:
+#                d -= 1
+#        return L
+#    else:
+#        while len(L) != 10:
+#            L.append(L0.pop(d))
+#            if d != 0:
+#                d -= 1
+#            L.append(L0.pop(d))
+#        return L
 
+def get_search_list(target=1999):
+    filename = 'search_lists.csv'
+    with open(filename) as f:
+        L = np.loadtxt(f,dtype=int,delimiter=' ')
+    t = int(str(target)[:2])
+    line_index = ceil(0.2*t) 
+    return L[line_index]
     
 #def tail(n, R2, target=5472):
 #    n = str(n)
@@ -165,7 +177,7 @@ def solve_0(n, target=1999):
             return n
         else:
             return n[1] + n[0]
-    A = make_search_list(target=target)
+    A = get_search_list(target=target)
     print('A: ',A)
     i = 0 # index in search list
 #    print("searching n = " + n)
@@ -191,7 +203,7 @@ def solve_0(n, target=1999):
             outer = outer0 + tail(n[:c]+n[(c+1):],True)
         else:
             outer = outer0 + tail(n[:c]+n[(c+1):],False)
-#        print("outer: "+ str(outer))
+        print("outer: "+ str(outer))
         out_distance = abs(int(outer) - target)
         t = int(str(target)[1:])
         print("target = " + str(target) + " ...new target = " + str(t))
@@ -232,14 +244,7 @@ def solve_0(n, target=1999):
             return outer_1
         else:
             return outer_2
-#                    print('new_n: '+n[:c]+n[(c+1):])
-#                    ans += n[c]
-#                    return solve_0(n[:c]+n[(c+1):],int(t),ans=ans)
-#                else: 
-#                    return ans + tail1(n[:c]+n[(c+1):])
-#            print('just found something again!')
-#            print('namely a ' + n[b])
-#            print('at position '+ str(b))            
+          
             
 
 
@@ -267,8 +272,9 @@ def wrong(n,ans):
 #    print(int(solve(number)))
 #    print(solve_0(number))
 #    k += 1
-#example_n = 1901
-#print("number: " + str(example_n))
-#print("correct solution:   " + solve(example_n))
-#print("suggested solution: " + solve_0(example_n))
-print(make_search_list(target=860))
+example_n = 2062
+print("number: " + str(example_n))
+print("correct solution:   " + solve(example_n))
+print("suggested solution: " + solve_0(example_n))
+
+#print(get_search_list(target=999))
