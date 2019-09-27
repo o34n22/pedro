@@ -90,6 +90,8 @@ def make_search_list(target=1999):
     if target_rounded - target > 0: 
         d -= 1
         while len(L) != 10:
+            print("d = " + str(d))
+            print(L)
             L.append(L0.pop(d))
             L.append(L0.pop(d))
             if d != 0:
@@ -173,14 +175,19 @@ def solve_0(n, target=1999):
 #        print(b)
         print("found a " + inner0 + " at position " + str(b))
         i += 1
-        outer0 = None
-        while outer0 == None:
-            c = n.find(str(A[i]))
-            if c != -1:
-                outer0 = n[c]
-                print("found a " + outer0 + " at position " + str(c))
-            i += 1
-        if int(outer0) < A[0]:
+        c = n.find(str(A[i]))
+        outer0 = '-1'
+        if c != -1:
+            outer0 = n[c]
+            print("found a " + outer0 + " at position " + str(c))
+        else:
+            print("found no " + str(A[i]))
+            new_n = n[:b]+n[(b+1):]
+            t = int(str(target)[1:])
+            print("target = " + str(target) + " ...new target = " + str(t))
+            print("     n = " + n + " ...new n =      " + str(new_n))
+            inner = inner0 + solve_0(new_n,target=t)
+        if int(outer0) != -1 and int(outer0) < A[0]:
             outer = outer0 + tail(n[:c]+n[(c+1):],True)
         else:
             outer = outer0 + tail(n[:c]+n[(c+1):],False)
@@ -260,8 +267,8 @@ def wrong(n,ans):
 #    print(int(solve(number)))
 #    print(solve_0(number))
 #    k += 1
-example_n = 1901
-print("number: " + str(example_n))
-print("correct solution:   " + solve(example_n))
-print("suggested solution: " + solve_0(example_n))
-
+#example_n = 1901
+#print("number: " + str(example_n))
+#print("correct solution:   " + solve(example_n))
+#print("suggested solution: " + solve_0(example_n))
+print(make_search_list(target=860))
