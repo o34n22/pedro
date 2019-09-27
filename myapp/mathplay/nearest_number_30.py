@@ -114,8 +114,8 @@ def get_search_list(target=1999):
     filename = 'search_lists.csv'
     with open(filename) as f:
         L = np.loadtxt(f,dtype=int,delimiter=' ')
-    t = int(str(target)[:2])
-    line_index = ceil(0.2*t) 
+    power = len(str(target)) - 1
+    line_index = ceil(2*target*0.1**power)
     return L[line_index]
     
 #def tail(n, R2, target=5472):
@@ -178,38 +178,38 @@ def solve_0(n, target=1999):
         else:
             return n[1] + n[0]
     A = get_search_list(target=target)
-    print('A: ',A)
+#    print('A: ',A)
     i = 0 # index in search list
 #    print("searching n = " + n)
     b = n.find(str(A[i]))
     if b != -1:
         inner0 = n[b]
 #        print(b)
-        print("found a " + inner0 + " at position " + str(b))
+#        print("found a " + inner0 + " at position " + str(b))
         i += 1
         c = n.find(str(A[i]))
         outer0 = '-1'
         if c != -1:
             outer0 = n[c]
-            print("found a " + outer0 + " at position " + str(c))
+#            print("found a " + outer0 + " at position " + str(c))
         else:
-            print("found no " + str(A[i]))
+#            print("found no " + str(A[i]))
             new_n = n[:b]+n[(b+1):]
             t = int(str(target)[1:])
-            print("target = " + str(target) + " ...new target = " + str(t))
-            print("     n = " + n + " ...new n =      " + str(new_n))
+#            print("target = " + str(target) + " ...new target = " + str(t))
+#            print("     n = " + n + " ...new n =      " + str(new_n))
             inner = inner0 + solve_0(new_n,target=t)
         if int(outer0) != -1 and int(outer0) < A[0]:
             outer = outer0 + tail(n[:c]+n[(c+1):],True)
         else:
             outer = outer0 + tail(n[:c]+n[(c+1):],False)
-        print("outer: "+ str(outer))
+#        print("outer: "+ str(outer))
         out_distance = abs(int(outer) - target)
         t = int(str(target)[1:])
-        print("target = " + str(target) + " ...new target = " + str(t))
+#        print("target = " + str(target) + " ...new target = " + str(t))
         new_n = n[:b]+n[(b+1):]
-        print("     n = " + n + " ...new n =      " + str(new_n))
-        print("inner again")
+#        print("     n = " + n + " ...new n =      " + str(new_n))
+#        print("inner again")
         inner = inner0 + solve_0(new_n,target=t)
 #        print("inner: " + str(inner))
         in_distance = abs(int(inner) - target)
@@ -218,7 +218,7 @@ def solve_0(n, target=1999):
         else:
             return inner
     else:
-        print("hello from out here")
+#        print("hello from out here")
         i += 1
         """if I didn't find i=0 search for two outers and compare directly"""
         while b == -1:
@@ -263,18 +263,18 @@ def wrong(n,ans):
 # --------------- testing ----------------
 
 
-#k = 0
-##L = [910,956,249,847,123]
-#while k < 10:
-#    number = rd.randint(1000,9999)
-##    number = L[k]
-#    print('number: '+str(number))
-#    print(int(solve(number)))
-#    print(solve_0(number))
-#    k += 1
-example_n = 2062
-print("number: " + str(example_n))
-print("correct solution:   " + solve(example_n))
-print("suggested solution: " + solve_0(example_n))
+k = 0
+#L = [910,956,249,847,123]
+while k < 10:
+    number = rd.randint(1000,9999)
+#    number = L[k]
+    print('number: '+str(number))
+    print(int(solve(number)))
+    print(solve_0(number))
+    k += 1
+#example_n = 2062
+#print("number: " + str(example_n))
+#print("correct solution:   " + solve(example_n))
+#print("suggested solution: " + solve_0(example_n))
 
-#print(get_search_list(target=999))
+#print(get_search_list(target=1999))
