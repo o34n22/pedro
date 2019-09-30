@@ -22,10 +22,12 @@ def pose(target):
 
 
 def get_search_list(target):
+    number_of_digits = len(str(target))
+    target = int(target)
     filename = 'search_lists.csv'
     with open(filename) as f:
         L = np.loadtxt(f,dtype=int,delimiter=' ')
-    power = len(str(target)) - 1
+    power = number_of_digits - 1
     line_index = ceil(2*target*0.1**power)
     return L[line_index]
 
@@ -42,20 +44,18 @@ def tail(n_tail,below=True):
 def solve(n, target):
     """
     finds the permutation of n which is nearest to target
-    by least number of comparisons
     """
-    if int(n) == target:
+    if int(n) == int(target):
         return n
     n = str(n)
     if len(n) == 2: # only two digits left -> direct comparison
-        distance_1 = abs(int(n) - target)
-        distance_2 = abs(int(n[1]+n[0]) - target)
+        distance_1 = abs(int(n) - int(target))
+        distance_2 = abs(int(n[1]+n[0]) - int(target))
         if distance_1 < distance_2:
             return n
         else:
             return n[1] + n[0]
-    A = get_search_list(target)
-    print(A)
+    A = get_search_list(target=target)
     i = 0 # index in search list
     b = n.find(str(A[i]))
     if b != -1:
@@ -67,19 +67,18 @@ def solve(n, target):
             outer0 = n[c]
         else:
             new_n = n[:b]+n[(b+1):]
-            print("target = " + str(target))
-            t = int(str(target)[1:])
-            inner = inner0 + solve(new_n,t)
+            t = str(target)[1:]
+            inner = inner0 + solve(new_n,target=t)
             return inner
         if int(outer0) != -1 and int(outer0) < A[0]:
             outer = outer0 + tail(n[:c]+n[(c+1):],below=True)
         else:
             outer = outer0 + tail(n[:c]+n[(c+1):],below=False)
-        out_distance = abs(int(outer) - target)
-        t = int(str(target)[1:])
+        out_distance = abs(int(outer) - int(target))
+        t = str(target)[1:]
         new_n = n[:b]+n[(b+1):]
-        inner = inner0 + solve(new_n,t)
-        in_distance = abs(int(inner) - target)
+        inner = inner0 + solve(new_n,target=t)
+        in_distance = abs(int(inner) - int(target))
         if out_distance < in_distance:
             return outer
         elif out_distance > in_distance:
@@ -108,8 +107,8 @@ def solve(n, target):
                     outer_2 = outer0 + tail(n[:b]+n[(b+1):],below=False)
                 break
             i += 1
-        distance_1 = abs(int(outer_1) - target)
-        distance_2 = abs(int(outer_2) - target)
+        distance_1 = abs(int(outer_1) - int(target))
+        distance_2 = abs(int(outer_2) - int(target))
         if distance_1 < distance_2:
             return outer_1
         elif distance_1 > distance_2:
@@ -139,24 +138,31 @@ class Task:
         self.target   = target        
         self.number   = pose(target)
         self.solution = solve(self.number,self.target)
+        self.ans      = ''
         
+    def post_ans(self,some_answer):
+        self.ans      = some_answer
+        
+    def check_ans(self):
+        correct = self.solution == self.ans
+        return correct
 
-def wrong(n,ans):
-    if is_permutation(n,ans):
-        message = 'It seems there is a number yet nearer to 500.' # target!!!
-    else:
-        message = 'Digits aren\'t matching. You must use the digits from \
-                  the number given.'
-#    else:
-#        message = "I\'m speechless."
-    return message
+    def wrong(self):
+        if is_permutation(self.number,self.ans):
+            message = 'It seems there is a number yet nearer to %s.' % self.target
+        else:
+            message = 'Digits aren\'t matching. You must use the digits from \
+                      the number given.'
+    #    else:
+    #        message = "I\'m speechless."
+        return message
 
 
 # --------------- testing ----------------
 a = Task(5001)
-print(a.target)
-print(a.number)
-print(a.solution)
+#print(a.target)
+#print(a.number)
+#print(a.solution)
 
 #k = 0
 #L = [910,956,249,847,123]
