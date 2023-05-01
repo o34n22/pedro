@@ -1,6 +1,6 @@
 virtualenv==15.1.0
 
-Flask==1.1.1
+Flask==2.3.2
 Werkzeug==0.15.6
 Jinja2-2.10.1
 MarkupSafe-1.1.1
